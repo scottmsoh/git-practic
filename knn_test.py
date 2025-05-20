@@ -21,10 +21,10 @@ class KNNClassifier:
         return y_pred
 
     def _compute_distances(self, X):
-        X_square = np.sum(X**2, axis=1, keepdims=True)
+        X_squared = np.sum(X**2, axis=1, keepdims=True)
         train_square = np.sum(self.X_train**2, axis=1)
         cross_term = np.dot(X, self.X_train.T)
-        distances = np.sqrt(X_square - 2 * cross_term + train_square)
+        distances = np.sqrt(X_squared - 2 * cross_term + train_square)
 
         return distances
 
