@@ -186,6 +186,7 @@ class RandomForest:
 
 		return np.array([np.bincount(row).argmax() for row in predicted_labels_by_trees])
 
+
 class Stump:
     def __init__(self):
         self.feature_index = None
