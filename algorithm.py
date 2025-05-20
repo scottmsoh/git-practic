@@ -185,3 +185,63 @@ class RandomForest:
 		predicted_labels_by_trees = predicted_labels_by_trees.T
 
 		return np.array([np.bincount(row).argmax() for row in predicted_labels_by_trees])
+
+class Stump:
+    def __init__(self):
+        self.feature_index = None
+        self.threshold = None
+        self.polarity = 1
+        self.amount_of_say = None
+
+    def predict(self, X):
+        n_samples = len(X)
+        predictions = np.ones(n_samples)
+        feature = X[:, self.feature_index]
+
+        if self.polarity == 1:
+            predictions[feature < self.threshold] = -1
+        else:
+            predictions[feature  self.threshold] = -1
+
+        return predictions
+
+
+class AdaBoost:
+    def __init__(self, n_estimators=10, epsilon=1e-10):
+        self.n_estimators = n_estimators
+        self.epsilon = epsilon
+        self.models = []
+
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+        weights = np.full(n_samples, (1/n_samples))
+
+       for _ in range(self.n_estimators):
+           stump = Stump()
+           min_error = float('inf')
+           for feature_i in range(n_features):
+               feature_values = np.unique(X[:, feature_i])
+               for threshold in feature_values:
+                   for polarity in [1, -1]:
+                       predictions = np.ones(n_samples)
+                       if polarity == 1:
+                           predictions[X[:, feature_i] < threshold] = -1
+                       else:
+                           predictions[X[:, feature_i]  threshold] = -1
+                       misclassified = weights[y != predictions]
+                       error = misclassified.sum()
+                       if error < min_error:
+                           stump.polarity = polarity
+                           stump.threshold = threshold
+                           stump.feature_index = feature_i
+                           min_error = error
+           stump.amount_of_say = 0.5*np.log((1-min_error+self.epsilon) / (min_error+self.epsilon))
+           predictions = stump.predict(X)
+           weights *= np.exp(-stump.amount_of_say * y * predictions)
+           weights /= np.sum(weights)
+           self.models.append(stump)
+   def predict(self, X):
+       stump_predictions = [model.alpha*model.predict(X) for model in self.models]
+       y_pred = np.sign(np.sum(stump_predictions, axis=0))
+
+       return y_pred
