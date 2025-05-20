@@ -11,15 +11,22 @@ class KNNClassifier:
         self.X_train = X
         self.y_train = y
 
-    def _predict_single(self, x):
-        distances = np.linalg.norm(self.X_train-x, axis=1)
-        k_indices = np.argsort(distances)[:self.k]
+    def predict(self, X):
+        distances = self._compute_distances(X)
+        k_indices = np.argsort(distances, axis=1)[:, :self.k]
         k_labels = self.y_train[k_indices]
 
-        return np.argmax(np.bincount(k_labels))
+        y_pred = np.array([np.argmax(np.bincount(row)) for row in k_labels])
 
-    def predict(self, X):
-        return np.array([self._predict_single(x) for x in X])
+        return y_pred
+
+    def _compute_distances(self, X):
+        X_square = np.sum(X**2, axis=1, keepdims=True)
+        train_square = np.sum(self.X_train**2, axis=1)
+        cross_term = np.dot(X, self.X_train.T)
+        distances = np.sqrt(X_square - 2 * cross_term + train_square)
+
+        return distances
 
     def score(self, X, y):
         y_pred = self.predict(X)
