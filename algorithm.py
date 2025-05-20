@@ -73,33 +73,6 @@ class DecisionTree:
 
 		return split_idx, split_threshold
 
-	# def _find_best_split(self, X, y, num_features):
-	# 	best_gain = -1
-	# 	split_idx, split_thresh = None, None
-
-	# 	for feature_index in range(num_features):
-	# 		sorted_indices = X[:, feature_index].argsort()
-	# 		X_sorted = X[sorted_indices]
-	# 		y_sorted = y[sorted_indices]
-
-	# 		for i in range(1, len(X_sorted)):
-	# 			if y_sorted[i] == y_sorted[i-1]:
-	# 				continue
-
-	# 			threshold = (X_sorted[i, feature_index] + X_sorted[i-1, feature_index]) / 2
-
-	# 			left = y_sorted[:i]
-	# 			right = y_sorted[i:]
-
-	# 			information_gain = self._information_gain(y_sorted, left, right)
-
-	# 			if information_gain best_gain:
-	# 				best_gain = information_gain
-	# 				split_idx = feature_index
-	# 				split_thresh = threshold
-
-	# 	return split_idx, split_thresh
-
 	def _entropy(self, y):
 		hist = np.bincount(y)
 		ps = hist / len(y)
