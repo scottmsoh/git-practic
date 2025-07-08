@@ -9,6 +9,9 @@ pipeline {
         }
 
         stage('Test for PR to develop') {
+            steps {
+                echo "Build complete for ${env.CHANGE_TARGET}"
+            }
             when {
                 allOf {
                     expression { env.CHANGE_ID != null }
