@@ -7,11 +7,12 @@ pipeline {
                 checkout scm
             }
         }
-
-        stage('Test for PR to develop') {
+        stage('check_change_target'){
             steps {
                 echo "Build complete for ${env.CHANGE_TARGET}"
             }
+        }
+        stage('Test for PR to develop') {
             when {
                 allOf {
                     expression { env.CHANGE_ID != null }
