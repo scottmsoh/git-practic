@@ -1,0 +1,17 @@
+name: pyhon code test when PR is closed
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [opened, syncronize, reopened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ✅ Checkout branch
+        uses: actions/checkout@v3
+
+      - name: 🚀 Deploy to EC2 with CodeDeploy
+        run:
+          python ./test/test.py
